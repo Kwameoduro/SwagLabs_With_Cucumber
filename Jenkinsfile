@@ -62,24 +62,47 @@ pipeline {
             }
         }
 
-        stage('Publish Cucumber Report') {
+        //stage('Publish Cucumber Report') {
+		//	steps {
+		//		script {
+		//			if (fileExists('target/cucumber-reports')) {
+		//				cucumber([
+        //                    includeProperties: false,
+        //                    jdk: '',
+        //                    properties: [],
+        //                    reportBuildPolicy: 'ALWAYS',
+        //                    results: [[path: 'target/cucumber-reports']]
+        //                ])
+        //            } else {
+		//				echo "No Cucumber results found at target/cucumber-reports"
+        //            }
+        //        }
+        //    }
+        //}
+
+            stage('Publish Cucumber Report') {
 			steps {
-				script {
-					if (fileExists('target/cucumber-reports')) {
-						cucumber([
-                            includeProperties: false,
-                            jdk: '',
-                            properties: [],
-                            reportBuildPolicy: 'ALWAYS',
-                            results: [[path: 'target/cucumber-reports']]
-                        ])
-                    } else {
-						echo "No Cucumber results found at target/cucumber-reports"
-                    }
-                }
-            }
-        }
+				echo "Publishing Cucumber reports..."
+
+        // Publish JSON reports for Cucumber Reports plugin
+        cucumber buildStatus: 'UNSTABLE',
+                 fileIncludePattern: '**/target/cucumber-reports/*.json',
+                 trendsLimit: 10
+
+        // Publish pretty HTML report
+        publishHTML([
+            allowMissing: false,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'target/cumber-reports/cucumber-html-report',
+            reportFiles: 'index.html',
+            reportName: 'Cucumber HTML Report'
+        ])
     }
+}
+    }
+
+
 
 post {
 		success {
