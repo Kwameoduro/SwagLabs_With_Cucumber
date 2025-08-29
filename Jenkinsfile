@@ -186,7 +186,7 @@ post {
         <div style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 5px; padding: 15px; margin: 20px 0;">
             <h3 style="margin-top: 0; color: #856404;">Build Information</h3>
             <ul style="margin: 0;">
-                <li><strong>Project:</strong> FakeStore API Test Suite</li>
+                <li><strong>Project:</strong> SwagLabs With Cucumber Test Suite</li>
                 <li><strong>Build Number:</strong> #${env.BUILD_NUMBER}</li>
                 <li><strong>Duration:</strong> ${currentBuild.durationString}</li>
                 <li><strong>Status:</strong> Tests completed with some failures</li>
