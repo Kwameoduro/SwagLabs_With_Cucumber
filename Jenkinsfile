@@ -19,19 +19,25 @@ pipeline {
 
         stage('Run Tests') {
 			steps {
-				script {
-					// Run tests but don't fail the build on test failures
-                    // This allows Jenkins to process the test results
-                    try {
-						sh 'mvn clean test -Dbrowser=chrome'
-                    } catch (Exception e) {
-						echo "Some tests failed, but continuing to process results..."
-                        echo "Error: ${e.getMessage()}"
-                        // Set build as unstable instead of failed
-                        currentBuild.result = 'UNSTABLE'
-                    }
-                }
-            }
+				catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+					// Run tests (if they fail, stage is marked as FAILURE)
+            sh 'mvn clean test -Dbrowser=chrome'
+        }
+    }
+			//steps {
+			//	script {
+			//		// Run tests but don't fail the build on test failures
+            //        // This allows Jenkins to process the test results
+            //        try {
+			//			sh 'mvn clean test -Dbrowser=chrome'
+            //        } catch (Exception e) {
+			//			echo "Some tests failed, but continuing to process results..."
+            //            echo "Error: ${e.getMessage()}"
+            //            // Set build as unstable instead of failed
+            //            currentBuild.result = 'UNSTABLE'
+            //        }
+            //    }
+            //}
             post {
 				always {
 					script {
@@ -79,40 +85,6 @@ pipeline {
         //        }
         //    }
         //}
-        stage('Debug Cucumber Reports') {
-			steps {
-				echo "Listing files inside target/cucumber-reports..."
-        sh 'ls -R target/cucumber-reports || true'
-    }
-}
-stage('Publish Cucumber Reports') {
-			steps {
-				script {
-					def candidates = [
-                [dir: 'target/cucumber-reports', file: 'index.html', name: 'Cucumber Report (index)'],
-                [dir: 'target/cucumber-reports', file: 'overview-features.html', name: 'Cucumber Report (features)'],
-                [dir: 'target/cucumber-reports', file: 'cucumber-html-report.html', name: 'Cucumber Report (legacy)']
-            ]
-
-            candidates.each { r ->
-                if (fileExists("${r.dir}/${r.file}")) {
-						publishHTML([
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: r.dir,
-                        reportFiles: r.file,
-                        reportName: r.name
-                    ])
-                    echo "✅ Published ${r.name} at ${r.dir}/${r.file}"
-                } else {
-						echo "⚠️ Skipped ${r.name}, file not found: ${r.dir}/${r.file}"
-                }
-            }
-        }
-    }
-}
-
 
 
     }
@@ -126,7 +98,7 @@ post {
                 color: 'good',
                 message: """
 🎉 *BUILD SUCCESS*
-*Project:* APITestingWithJenkins
+*Project:* SwagLabs With Cucumber
 *Build:* #${env.BUILD_NUMBER}
 *Duration:* ${currentBuild.durationString}
 *Status:* All tests passed successfully
@@ -141,7 +113,7 @@ post {
             )
 
             emailext(
-                subject: "✅ Build Success - FakeStore API Tests #${env.BUILD_NUMBER}",
+                subject: "✅ Build Success - SwagLabs Cucumber Tests #${env.BUILD_NUMBER}",
                 body: """
 <html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
@@ -153,7 +125,7 @@ post {
         <div style="background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; padding: 15px; margin: 20px 0;">
             <h3 style="margin-top: 0; color: #155724;">Build Information</h3>
             <ul style="margin: 0;">
-                <li><strong>Project:</strong> FakeStore API Test Suite</li>
+                <li><strong>Project:</strong> SwagLabs With Cucumber</li>
                 <li><strong>Build Number:</strong> #${env.BUILD_NUMBER}</li>
                 <li><strong>Duration:</strong> ${currentBuild.durationString}</li>
                 <li><strong>Status:</strong> All tests executed successfully</li>
@@ -170,7 +142,7 @@ post {
         </div>
 
         <p style="margin: 20px 0; padding: 15px; background-color: #e7f3ff; border-left: 4px solid #007bff; border-radius: 3px;">
-            <strong>✅ Status:</strong> The API test suite has completed successfully. All endpoints are functioning as expected.
+            <strong>✅ Status:</strong> The SwagLabs with Cucumber has completed successfully. All endpoints are functioning as expected.
         </p>
 
         <p style="color: #6c757d; font-size: 0.9em; margin-top: 30px; text-align: center;">
@@ -193,7 +165,7 @@ post {
                 color: 'warning',
                 message: """
 ⚠️ *BUILD UNSTABLE*
-*Project:* APITestingWithJenkins
+*Project:* SwagLabs With Cucumber
 *Build:* #${env.BUILD_NUMBER}
 *Duration:* ${currentBuild.durationString}
 *Status:* Some tests failed - requires attention
@@ -208,7 +180,7 @@ post {
             )
 
             emailext(
-                subject: "⚠️ Build Unstable - FakeStore API Tests #${env.BUILD_NUMBER}",
+                subject: "⚠️ Build Unstable - SwagLabs With Cucumber Tests #${env.BUILD_NUMBER}",
                 body: """
 <html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
@@ -247,7 +219,7 @@ post {
         </div>
 
         <p style="margin: 20px 0; padding: 15px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 3px;">
-            <strong>⚠️ Action Required:</strong> Some API tests have failed. Please review the reports and address the issues before deployment.
+            <strong>⚠️ Action Required:</strong> Some SwagLabs With Cucumnber tests have failed. Please review the reports and address the issues before deployment.
         </p>
 
         <p style="color: #6c757d; font-size: 0.9em; margin-top: 30px; text-align: center;">
@@ -270,7 +242,7 @@ post {
                 color: 'danger',
                 message: """
 🚨 *BUILD FAILED*
-*Project:* APITestingWithJenkins
+*Project:* SwagLabs With Cucumber
 *Build:* #${env.BUILD_NUMBER}
 *Duration:* ${currentBuild.durationString}
 *Status:* Build process failed
@@ -285,7 +257,7 @@ post {
             )
 
             emailext(
-                subject: "🚨 Build Failed - FakeStore API Tests #${env.BUILD_NUMBER}",
+                subject: "🚨 Build Failed - SwagLabs With Cucumber Tests #${env.BUILD_NUMBER}",
                 body: """
 <html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
@@ -297,7 +269,7 @@ post {
         <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; padding: 15px; margin: 20px 0;">
             <h3 style="margin-top: 0; color: #721c24;">Build Information</h3>
             <ul style="margin: 0;">
-                <li><strong>Project:</strong> FakeStore API Test Suite</li>
+                <li><strong>Project:</strong> SwagLabs With Cucumber Test Suite</li>
                 <li><strong>Build Number:</strong> #${env.BUILD_NUMBER}</li>
                 <li><strong>Duration:</strong> ${currentBuild.durationString}</li>
                 <li><strong>Status:</strong> Build process failed to complete</li>
