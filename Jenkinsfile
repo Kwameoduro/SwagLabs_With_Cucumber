@@ -15,39 +15,44 @@ pipeline {
 				sh 'java -version'
                 sh 'mvn test-compile'
             }
+
         }
+
+        stage('Build Docker Image') {
+			steps {
+				echo ">>> Building Docker image selenium-cucumber-tests"
+        sh 'docker build -t selenium-cucumber-tests .'
+    }
+}
 		stage('Run Tests in Docker') {
-			parallel {
 				stage('Chrome'){
 					steps{
 						echo ">>> Running Cucumber tests inside Docker container (Chrome)"
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 							sh '''
-                docker run --rm -e BROWSER=chrome \
+                docker run --rm selenium-cucumber-tests \
                 -v $WORKSPACE/allure-results/chrome:/app/allure-results \
                 -v $WORKSPACE:/app -w /app SwagLabs_With_Cucumber clean test
                 '''
                 }
             }
         }
-        }
-        }
 
-        stage('Run Tests') {
-			steps {
-				script {
-					// Run tests but don't fail the build on test failures
-                    // This allows Jenkins to process the test results
-                    //try {
-					sh 'mvn clean test -Dbrowser=chrome'
-                    //} catch (Exception e) {
-					//	echo "Some tests failed, but continuing to process results..."
-                    //    echo "Error: ${e.getMessage()}"
-                    //     Set build as unstable instead of failed
-                        //currentBuild.result = 'FAILED'
-                    //}
-                }
-            }
+        //stage('Run Tests') {
+		//	steps {
+		//		script {
+		//			// Run tests but don't fail the build on test failures
+        //            // This allows Jenkins to process the test results
+        //            //try {
+		//			sh 'mvn clean test -Dbrowser=chrome'
+        //            //} catch (Exception e) {
+		//			//	echo "Some tests failed, but continuing to process results..."
+        //            //    echo "Error: ${e.getMessage()}"
+        //            //     Set build as unstable instead of failed
+        //                //currentBuild.result = 'FAILED'
+        //            //}
+        //        }
+        //    }
             post {
 				always {
 					echo 'Publishing test results and reports...'
