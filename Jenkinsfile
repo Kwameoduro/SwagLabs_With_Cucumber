@@ -80,26 +80,27 @@ pipeline {
         //    }
         //}
 
-            stage('Publish Cucumber Report') {
+           stage('Publish Cucumber Report') {
 			steps {
 				echo "Publishing Cucumber reports..."
 
-        // Publish JSON reports for Cucumber Reports plugin
+        // Publish JSON reports for trend chart (if you still want it)
         cucumber buildStatus: 'UNSTABLE',
                  fileIncludePattern: '**/target/cucumber-reports/*.json',
                  trendsLimit: 10
 
-        // Publish pretty HTML report
+        // Publish the generated HTML report
         publishHTML([
             allowMissing: false,
             alwaysLinkToLastBuild: true,
             keepAll: true,
-            reportDir: 'target/cumber-reports/cucumber-html-report',
-            reportFiles: 'index.html',
+            reportDir: 'target/cucumber-reports/cucumber',
+            reportFiles: 'cucumber-html-report.html',
             reportName: 'Cucumber HTML Report'
         ])
     }
 }
+
     }
 
 
