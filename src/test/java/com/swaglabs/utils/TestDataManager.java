@@ -24,14 +24,14 @@ public class TestDataManager {
     private void loadProperties() {
         properties = new Properties();
         try (InputStream inputStream = getClass().getClassLoader()
-                .getResourceAsStream("test-data.properties")) {
+                .getResourceAsStream("testdata.properties")) {
             if (inputStream != null) {
                 properties.load(inputStream);
             } else {
-                throw new RuntimeException("test-data.properties file not found in resources");
+                throw new RuntimeException("testdata.properties file not found in resources");
             }
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load test-data.properties", e);
+            throw new RuntimeException("Failed to load testdata.properties", e);
         }
     }
 
