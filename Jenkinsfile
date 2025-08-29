@@ -79,15 +79,14 @@ pipeline {
         //        }
         //    }
         //}
-
-          stage('Debug Workspace') {
+        stage('Debug Cucumber Reports') {
 			steps {
-				echo "Listing report directories..."
-        sh 'ls -R target || true'
+				echo "Listing files inside target/cucumber-reports..."
+        sh 'ls -R target/cucumber-reports || true'
     }
 }
 
-		stage('Publish Cucumber Report') {
+stage('Publish Cucumber Report') {
 			steps {
 				echo "Publishing Cucumber HTML Report..."
 
@@ -96,11 +95,14 @@ pipeline {
             alwaysLinkToLastBuild: true,
             keepAll: true,
             reportDir: 'target/cucumber-reports',
-            reportFiles: 'cucumber-html-report.html',
+            reportFiles: 'cucumber-html-report.html',  // adjust after debug
             reportName: 'Cucumber HTML Report'
         ])
     }
 }
+
+
+
 
     }
 
