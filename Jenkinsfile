@@ -16,6 +16,22 @@ pipeline {
                 sh 'mvn test-compile'
             }
         }
+		stage('Run Tests in Docker') {
+			parallel {
+				stage('Chrome'){
+					steps{
+						echo ">>> Running Cucumber tests inside Docker container (Chrome)"
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+							sh '''
+                docker run --rm -e BROWSER=chrome \
+                -v $WORKSPACE/allure-results/chrome:/app/allure-results \
+                -v $WORKSPACE:/app -w /app SwagLabs_With_Cucumber clean test
+                '''
+                }
+            }
+        }
+        }
+        }
 
         stage('Run Tests') {
 			steps {
