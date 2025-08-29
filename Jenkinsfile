@@ -85,22 +85,33 @@ pipeline {
         sh 'ls -R target/cucumber-reports || true'
     }
 }
-
-stage('Publish Cucumber Report') {
+stage('Publish Cucumber Reports') {
 			steps {
-				echo "Publishing Cucumber HTML Report..."
+				script {
+					def candidates = [
+                [dir: 'target/cucumber-reports', file: 'index.html', name: 'Cucumber Report (index)'],
+                [dir: 'target/cucumber-reports', file: 'overview-features.html', name: 'Cucumber Report (features)'],
+                [dir: 'target/cucumber-reports', file: 'cucumber-html-report.html', name: 'Cucumber Report (legacy)']
+            ]
 
-        publishHTML([
-            allowMissing: false,
-            alwaysLinkToLastBuild: true,
-            keepAll: true,
-            reportDir: 'target/cucumber-reports',
-            reportFiles: 'cucumber-html-report.html',  // adjust after debug
-            reportName: 'Cucumber HTML Report'
-        ])
+            candidates.each { r ->
+                if (fileExists("${r.dir}/${r.file}")) {
+						publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: r.dir,
+                        reportFiles: r.file,
+                        reportName: r.name
+                    ])
+                    echo "✅ Published ${r.name} at ${r.dir}/${r.file}"
+                } else {
+						echo "⚠️ Skipped ${r.name}, file not found: ${r.dir}/${r.file}"
+                }
+            }
+        }
     }
 }
-
 
 
 
