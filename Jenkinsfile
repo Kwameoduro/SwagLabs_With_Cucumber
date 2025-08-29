@@ -25,18 +25,16 @@ pipeline {
         }
 
         stage('Run Tests in Docker') {
-			stage('Chrome') {
-				steps {
-					echo ">>> Running Cucumber tests inside Docker container (Chrome)"
+			steps {
+				echo ">>> Running Cucumber tests inside Docker container (Chrome)"
                     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-						sh '''
+					sh '''
                             docker run --rm selenium-cucumber-tests \
                             -v $WORKSPACE/allure-results/chrome:/app/allure-results \
                             -v $WORKSPACE:/app -w /app SwagLabs_With_Cucumber clean test
                         '''
                     }
                 }
-            }
         }
     }
 
