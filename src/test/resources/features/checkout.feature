@@ -18,7 +18,7 @@ Feature: Swag Labs Checkout
     Then I should see "Sauce Labs Backpack" in the cart
     And I should see "Sauce Labs Bike Light" in the cart
     When I proceed to checkout
-    And I fill in checkout information with valid dta:
+    And I fill in checkout information:
       | firstName | lastName | postalCode |
       | Kofi      | Peter    | 0242       |
     And I continue to checkout overview
