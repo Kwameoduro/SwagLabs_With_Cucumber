@@ -54,9 +54,11 @@ public class DriverManager {
                 break;
 
             case "edge":
-                WebDriverManager.edgedriver().setup();
-                EdgeOptions edgeOptions = getEdgeOptions();
-                driver = new EdgeDriver(edgeOptions);
+//                WebDriverManager.edgedriver().setup();
+//                EdgeOptions edgeOptions = getEdgeOptions();
+//                driver = new EdgeDriver(edgeOptions);
+                System.setProperty("webdriver.edge.driver", "resources/msedgedriver.exe");
+                driver = new EdgeDriver();
                 break;
 
             default:
@@ -95,6 +97,7 @@ public class DriverManager {
 
         return options;
     }
+
 
     private static FirefoxOptions getFirefoxOptions() {
         FirefoxOptions options = new FirefoxOptions();
