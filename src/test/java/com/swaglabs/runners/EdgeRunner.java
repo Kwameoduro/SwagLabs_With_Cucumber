@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 public class EdgeRunner {
 
     static {
-        // Force Chrome browser for this runner
+        // Force edge browser for this runner
         System.setProperty("browser", "edge");
     }
 }
