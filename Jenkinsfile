@@ -34,51 +34,76 @@ pipeline {
             }
             post {
 				always {
-					script {
-						// Debug: List what's in the target directory
-                        sh '''
-                            echo "=== Target directory contents ==="
-                            ls -la target/cucumber-reports || echo "No target directory"
-                            echo "=== Surefire reports directory ==="
-                            ls -la target/surefire-reports/ || echo "No surefire-reports directory"
-                            echo "=== All XML files in target ==="
-                            find target -name "*.xml" -type f || echo "No XML files found"
-                        '''
+					echo 'Publishing test results and reports...'
 
-                        // Try to publish test results
-                        if (fileExists('target/surefire-reports/TEST-*.xml')) {
-							junit 'target/surefire-reports/TEST-*.xml'
-                            archiveArtifacts artifacts: 'target/surefire-reports/**/*', allowEmptyArchive: true
-                        } else if (fileExists('target/surefire-reports/*.xml')) {
-							junit 'target/surefire-reports/*.xml'
-                            archiveArtifacts artifacts: 'target/surefire-reports/**/*', allowEmptyArchive: true
-                        } else {
-							echo "No JUnit XML test reports found"
-                            // Archive any available test reports
-                            archiveArtifacts artifacts: 'target/surefire-reports/**/*', allowEmptyArchive: true
-                        }
-                    }
-                }
+    // Archive all artifacts
+    archiveArtifacts artifacts: 'target/**/*', allowEmptyArchive: true
+
+    // Publish parsed Cucumber JSON report
+    cucumber(
+        buildStatus: 'UNSTABLE',
+        fileIncludePattern: 'target/cucumber-reports/cucumber.json',
+        sortingMethod: 'ALPHABETICAL'
+    )
+
+    // Publish HTML report
+    publishHTML([
+        allowMissing: false,
+        alwaysLinkToLastBuild: true,
+        keepAll: true,
+        reportDir: 'target/cucumber-reports',
+        reportFiles: 'cucumber-html-report.html',
+        reportName: 'Cucumber Test Report',
+        reportTitles: 'BDD Test Results'
+    ])
+}
+				//always {
+				//	script {
+				//		// Debug: List what's in the target directory
+                //        sh '''
+                //            echo "=== Target directory contents ==="
+                //            ls -la target/cucumber-reports || echo "No target directory"
+                //            echo "=== Surefire reports directory ==="
+                //            ls -la target/surefire-reports/ || echo "No surefire-reports directory"
+                //            echo "=== All XML files in target ==="
+                //            find target -name "*.xml" -type f || echo "No XML files found"
+                //        '''
+                //
+				//
+                //        // Try to publish test results
+                //        if (fileExists('target/surefire-reports/TEST-*.xml')) {
+				//			junit 'target/surefire-reports/TEST-*.xml'
+                //            archiveArtifacts artifacts: 'target/surefire-reports/**/*', allowEmptyArchive: true
+                //        } else if (fileExists('target/surefire-reports/*.xml')) {
+				//			junit 'target/surefire-reports/*.xml'
+                //            archiveArtifacts artifacts: 'target/surefire-reports/**/*', allowEmptyArchive: true
+                //        } else {
+				//			echo "No JUnit XML test reports found"
+                //            // Archive any available test reports
+                //            archiveArtifacts artifacts: 'target/surefire-reports/**/*', allowEmptyArchive: true
+                //        }
+                //    }
+                //}
             }
         }
 
-        stage('Publish Cucumber Report') {
-			steps {
-				script {
-					if (fileExists('target/cucumber-reports')) {
-						cucumber([
-                            includeProperties: false,
-                            jdk: '',
-                            properties: [],
-                            reportBuildPolicy: 'ALWAYS',
-                            results: [[path: 'target/cucumber-reports']]
-                        ])
-                    } else {
-						echo "No Cucumber results found at target/cucumber-reports"
-                    }
-                }
-            }
-        }
+        //stage('Publish Cucumber Report') {
+		//	steps {
+		//		script {
+		//			if (fileExists('target/cucumber-reports')) {
+		//				cucumber([
+        //                    includeProperties: false,
+        //                    jdk: '',
+        //                    properties: [],
+        //                    reportBuildPolicy: 'ALWAYS',
+        //                    results: [[path: 'target/cucumber-reports']]
+        //                ])
+        //            } else {
+		//				echo "No Cucumber results found at target/cucumber-reports"
+        //            }
+        //        }
+        //    }
+        //}
 
 
     }
