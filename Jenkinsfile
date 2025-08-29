@@ -95,13 +95,12 @@ pipeline {
             allowMissing: false,
             alwaysLinkToLastBuild: true,
             keepAll: true,
-            reportDir: 'target/cucumber-reports/cucumber',
+            reportDir: 'target/cucumber-reports',
             reportFiles: 'cucumber-html-report.html',
             reportName: 'Cucumber HTML Report'
         ])
     }
 }
-
 
     }
 
