@@ -29,9 +29,7 @@ pipeline {
 				echo ">>> Running Cucumber tests inside Docker container (Chrome)"
                     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
 					sh '''
-                            docker run --rm selenium-cucumber-tests \
-                            -v $WORKSPACE/allure-results/chrome:/app/allure-results \
-                            -v $WORKSPACE:/app -w /app SwagLabs_With_Cucumber clean test
+                            docker run --rm selenium-cucumber-tests
                         '''
                     }
                 }
