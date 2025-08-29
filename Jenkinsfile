@@ -80,16 +80,17 @@ pipeline {
         //    }
         //}
 
-           stage('Publish Cucumber Report') {
+          stage('Debug Workspace') {
 			steps {
-				echo "Publishing Cucumber reports..."
+				echo "Listing report directories..."
+        sh 'ls -R target || true'
+    }
+}
 
-        // Publish JSON reports for trend chart (if you still want it)
-        cucumber buildStatus: 'UNSTABLE',
-                 fileIncludePattern: '**/target/cucumber-reports/*.json',
-                 trendsLimit: 10
+		stage('Publish Cucumber Report') {
+			steps {
+				echo "Publishing Cucumber HTML Report..."
 
-        // Publish the generated HTML report
         publishHTML([
             allowMissing: false,
             alwaysLinkToLastBuild: true,
@@ -100,6 +101,7 @@ pipeline {
         ])
     }
 }
+
 
     }
 
