@@ -19,25 +19,19 @@ pipeline {
 
         stage('Run Tests') {
 			steps {
-				catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-					// Run tests (if they fail, stage is marked as FAILURE)
-            sh 'mvn clean test -Dbrowser=chrome'
-        }
-    }
-			//steps {
-			//	script {
-			//		// Run tests but don't fail the build on test failures
-            //        // This allows Jenkins to process the test results
-            //        try {
-			//			sh 'mvn clean test -Dbrowser=chrome'
-            //        } catch (Exception e) {
-			//			echo "Some tests failed, but continuing to process results..."
-            //            echo "Error: ${e.getMessage()}"
-            //            // Set build as unstable instead of failed
-            //            currentBuild.result = 'UNSTABLE'
-            //        }
-            //    }
-            //}
+				script {
+					// Run tests but don't fail the build on test failures
+                    // This allows Jenkins to process the test results
+                    try {
+						sh 'mvn clean test -Dbrowser=chrome'
+                    } catch (Exception e) {
+						echo "Some tests failed, but continuing to process results..."
+                        echo "Error: ${e.getMessage()}"
+                        // Set build as unstable instead of failed
+                        currentBuild.result = 'FAILED'
+                    }
+                }
+            }
             post {
 				always {
 					script {
@@ -68,23 +62,23 @@ pipeline {
             }
         }
 
-        //stage('Publish Cucumber Report') {
-		//	steps {
-		//		script {
-		//			if (fileExists('target/cucumber-reports')) {
-		//				cucumber([
-        //                    includeProperties: false,
-        //                    jdk: '',
-        //                    properties: [],
-        //                    reportBuildPolicy: 'ALWAYS',
-        //                    results: [[path: 'target/cucumber-reports']]
-        //                ])
-        //            } else {
-		//				echo "No Cucumber results found at target/cucumber-reports"
-        //            }
-        //        }
-        //    }
-        //}
+        stage('Publish Cucumber Report') {
+			steps {
+				script {
+					if (fileExists('target/cucumber-reports')) {
+						cucumber([
+                            includeProperties: false,
+                            jdk: '',
+                            properties: [],
+                            reportBuildPolicy: 'ALWAYS',
+                            results: [[path: 'target/cucumber-reports']]
+                        ])
+                    } else {
+						echo "No Cucumber results found at target/cucumber-reports"
+                    }
+                }
+            }
+        }
 
 
     }
