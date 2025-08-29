@@ -22,14 +22,14 @@ pipeline {
 				script {
 					// Run tests but don't fail the build on test failures
                     // This allows Jenkins to process the test results
-                    try {
-						sh 'mvn clean test -Dbrowser=chrome'
-                    } catch (Exception e) {
-						echo "Some tests failed, but continuing to process results..."
-                        echo "Error: ${e.getMessage()}"
-                        // Set build as unstable instead of failed
-                        currentBuild.result = 'FAILED'
-                    }
+                    //try {
+					sh 'mvn clean test -Dbrowser=chrome'
+                    //} catch (Exception e) {
+					//	echo "Some tests failed, but continuing to process results..."
+                    //    echo "Error: ${e.getMessage()}"
+                    //     Set build as unstable instead of failed
+                        //currentBuild.result = 'FAILED'
+                    //}
                 }
             }
             post {
