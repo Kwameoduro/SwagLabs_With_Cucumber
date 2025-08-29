@@ -25,17 +25,18 @@ pipeline {
     }
 }
 		stage('Run Tests in Docker') {
-				stage('Chrome'){
-					steps{
-						echo ">>> Running Cucumber tests inside Docker container (Chrome)"
+			stage('Chrome'){
+				steps{
+					echo ">>> Running Cucumber tests inside Docker container (Chrome)"
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-							sh '''
+						sh '''
                 docker run --rm selenium-cucumber-tests \
                 -v $WORKSPACE/allure-results/chrome:/app/allure-results \
                 -v $WORKSPACE:/app -w /app SwagLabs_With_Cucumber clean test
                 '''
                 }
             }
+        }
         }
 
         //stage('Run Tests') {
@@ -53,6 +54,8 @@ pipeline {
         //            //}
         //        }
         //    }
+        //    }
+
             post {
 				always {
 					echo 'Publishing test results and reports...'
@@ -106,7 +109,7 @@ pipeline {
                 //    }
                 //}
             }
-        }
+
 
         //stage('Publish Cucumber Report') {
 		//	steps {
@@ -132,9 +135,9 @@ pipeline {
 
 
 post {
-		success {
-			script {
-				slackSend(
+			success {
+				script {
+					slackSend(
                 color: 'good',
                 message: """
 🎉 *BUILD SUCCESS*
@@ -200,8 +203,8 @@ post {
     }
 
     unstable {
-			script {
-				slackSend(
+				script {
+					slackSend(
                 color: 'warning',
                 message: """
 ⚠️ *BUILD UNSTABLE*
@@ -277,8 +280,8 @@ post {
     }
 
     failure {
-			script {
-				slackSend(
+				script {
+					slackSend(
                 color: 'danger',
                 message: """
 🚨 *BUILD FAILED*
