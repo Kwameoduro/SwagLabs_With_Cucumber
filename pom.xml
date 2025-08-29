@@ -114,6 +114,19 @@
                     <reportVersion>${allure.version}</reportVersion>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <parallel>classes</parallel>  <!-- run multiple runner classes at once -->
+                    <threadCount>4</threadCount>  <!-- number of threads -->
+                    <useUnlimitedThreads>false</useUnlimitedThreads>
+                    <reuseForks>true</reuseForks>
+                    <perCoreThreadCount>false</perCoreThreadCount>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
