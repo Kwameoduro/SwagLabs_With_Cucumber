@@ -4,3 +4,11 @@ This project is an automated testing framework for [Swag Labs](https://www.sauce
 It follows the **Page Object Model (POM)** design pattern, includes reusable utilities, and is fully Docker-ready.
 
 ---
+## Tech Stack
+
+- **Java 17+**
+- **Maven**
+- **Cucumber (BDD)**
+- **Selenium WebDriver**
+- **JUnit**
+- **Docker** (for containerized test execution)
