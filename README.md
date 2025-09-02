@@ -12,3 +12,20 @@ It follows the **Page Object Model (POM)** design pattern, includes reusable uti
 - **Selenium WebDriver**
 - **JUnit**
 - **Docker** (for containerized test execution)
+
+---
+## Features Covered
+
+- **User Login** (valid & invalid)
+- **View Products**
+- **Add/Remove items to/from cart**
+- **Checkout flow**
+- **Order confirmation**
+
+
+
+
+
+Checkout flow
+
+Order confirmation
