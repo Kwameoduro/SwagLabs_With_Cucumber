@@ -22,10 +22,3 @@ It follows the **Page Object Model (POM)** design pattern, includes reusable uti
 - **Checkout flow**
 - **Order confirmation**
 
-
-
-
-
-Checkout flow
-
-Order confirmation
