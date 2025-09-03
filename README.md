@@ -18,7 +18,7 @@ It follows the **Page Object Model (POM)** design pattern which includes reusabl
 
 - **User Login** (valid & invalid)
 - **View Products**
-- **Add/Remove items to/from cart**
+- **Add or Remove items to or from cart**
 - **Checkout flow**
 - **Order confirmation**
 
